@@ -1,6 +1,8 @@
 # /usr/bin/python3
 # -*- coding: utf-8 -*-
 import sys
+import csv
+
 import tensorflow as tf
 import numpy as np
 import pandas as pd
@@ -42,11 +44,22 @@ def main():
             [merged_summary, cost, hypothesis, W, b, train], feed_dict={X: x_data, Y: y_data})
         writer.add_summary(summary, global_step=step)
 
-        if step % 10 == 0:
+        if step % 100 == 0:
             # print(step, "Cost: ", cost_val, "\nPrediction:\n", hy_val)
             print(step, "Cost: ", cost_val)
             print("b: ", b_val)
             print ("W\n", W_val)
+
+
+    with open('output.csv', 'w', newline='') as f:
+        writer = csv.writer(f)
+        W_val = sess.run(W)
+        b_val = sess.run(b)
+        columns_count = len(W_val)
+        header = ['w'+str(i) for i in range(1, columns_count+1)] + ['b']
+        writer.writerow(header)
+        writer.writerow(list(W_val)+list([b_val]))
+
 
     # Ask my score
     # print("Your score will be ", sess.run(
